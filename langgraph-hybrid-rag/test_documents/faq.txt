@@ -1,0 +1,14 @@
+Q: What is a staging environment?
+A: A staging environment mirrors production for final testing before release.
+
+Q: What is a rollback?
+A: Reverting a deployment to a previous stable version.
+
+Q: What is blue-green deployment?
+A: Running two environments (blue and green) to enable zero-downtime releases.
+
+Q: What is canary release?
+A: Gradually rolling out changes to a subset of users to reduce risk.
+
+Q: What is observability?
+A: The ability to understand system state via logs, metrics, traces.

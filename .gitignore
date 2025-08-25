@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environments
+.venv/
+.env
+
+# Data
+langgraph-hybrid-rag/data/indices/
+langgraph-hybrid-rag/data/documents/
+
+# Logs
+/tmp/
+*.log
+
+# OS
+.DS_Store
