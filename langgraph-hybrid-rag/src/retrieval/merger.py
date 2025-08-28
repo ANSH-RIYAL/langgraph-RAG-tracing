@@ -17,4 +17,11 @@ def merge_results(vector_chunks: List[Dict], keyword_chunks: List[Dict], top_k: 
         add_with_score(ch, weight=0.5)
 
     sorted_chunks = sorted(merged.values(), key=lambda c: c.get("combined_score", 0.0), reverse=True)
+    # Normalize to fused_score in [0,1]
+    if sorted_chunks:
+        max_s = max(c.get("combined_score", 0.0) for c in sorted_chunks) or 1.0
+        min_s = min(c.get("combined_score", 0.0) for c in sorted_chunks)
+        rng = max(1e-9, (max_s - min_s))
+        for c in sorted_chunks:
+            c["fused_score"] = float((c.get("combined_score", 0.0) - min_s) / rng)
     return sorted_chunks[:top_k]
