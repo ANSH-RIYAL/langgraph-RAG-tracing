@@ -23,8 +23,8 @@ class Config:
     VECTOR_BACKEND: str = os.getenv("VECTOR_BACKEND", "faiss")  # or qdrant
     KEYWORD_BACKEND: str = os.getenv("KEYWORD_BACKEND", "bm25")  # or elasticsearch
 
-    FAISS_INDEX_PATH: str = os.getenv("FAISS_INDEX_PATH", "data/indices/vector.faiss")
-    BM25_INDEX_DIR: str = os.getenv("BM25_INDEX_DIR", "data/indices/bm25")
+    FAISS_INDEX_PATH: str = os.getenv("FAISS_INDEX_PATH", "data/generated_indices/vector.faiss")
+    BM25_INDEX_DIR: str = os.getenv("BM25_INDEX_DIR", "data/generated_indices/bm25")
 
     QDRANT_URL: str = os.getenv("QDRANT_URL", "http://localhost:6333")
     ELASTICSEARCH_URL: str = os.getenv("ELASTICSEARCH_URL", "http://localhost:9200")
@@ -32,7 +32,7 @@ class Config:
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
 
     API_HOST: str = os.getenv("API_HOST", "0.0.0.0")
-    API_PORT: int = int(os.getenv("API_PORT", 8000))
+    API_PORT: int = int(os.getenv("API_PORT", 8050))
 
 
 config = Config()
