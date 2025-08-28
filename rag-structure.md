@@ -7,16 +7,11 @@ langgraph-hybrid-rag/
 │   ├── ingestion/
 │   │   ├── loader.py          # Load PDFs, DOCX, TXT
 │   │   ├── chunker.py         # Split into 400-token chunks
-│   │   └── indexer.py         # Store embeddings/text in local indices
+│   │   └── indexer.py         # Store in both DBs
 │   │
 │   ├── retrieval/
-│   │   ├── backends/
-│   │   │   ├── faiss_store.py  # Local FAISS vector store
-│   │   │   ├── bm25_store.py   # Local BM25 keyword store
-│   │   │   ├── qdrant_store.py # Optional (stub)
-│   │   │   └── es_store.py     # Optional (stub)
-│   │   ├── vector_search.py    # Vector retrieval via configured backend
-│   │   ├── text_search.py      # Keyword retrieval via configured backend
+│   │   ├── vector_search.py   # FAISS similarity search (local)
+│   │   ├── text_search.py     # Rank-BM25 (local, in-memory)
 │   │   └── merger.py          # Combine and dedupe results
 │   │
 │   ├── agent/
@@ -27,31 +22,27 @@ langgraph-hybrid-rag/
 │   ├── api/
 │   │   ├── main.py           # FastAPI app
 │   │   ├── ingest.py         # POST /ingest endpoint
-│   │   └── query.py          # POST /query endpoint
+│   │   ├── query.py          # POST /query endpoint
+│   │   ├── documents.py      # GET /documents endpoint
+│   │   └── chunks.py         # GET /chunk/{chunk_id} endpoint
 │   │
-│   └── config.py             # Settings, prompts, backend selection
+│   ├── schemas.py            # Pydantic models for API + internal state
+│   ├── telemetry.py          # Structured logging utilities
+│   └── config.py             # Settings and prompts
 │
 ├── data/
 │   ├── documents/            # Uploaded files
-│   └── indices/              # Vector/text indices (vector.faiss, bm25/)
+│   ├── generated_indices/    # Standardized generated artifacts (FAISS, BM25, metadata)
+│   └── indices/              # (legacy) indices; migrate to generated_indices
 │
 ├── scripts/
-│   ├── download_test_docs.sh # Fetch large public PDFs and build FAQ
-│   └── test_pipeline.py      # Basic validation
+│   ├── setup.sh             # Start databases
+│   └── test_pipeline.py    # Basic validation
 │
-├── CHANGELOG.md             # Decisions, results, progress
-├── docker-compose.yml       # Qdrant + Elasticsearch (post-MVP)
+├── docker-compose.yml       # Qdrant + Elasticsearch
 ├── requirements.txt        
 ├── .env.example
-├── .env                     # Local secrets (do not commit externally)
-├── README.md
-├── rag-foundation.md        # Knowledge doc
-├── rag-plan.md              # Knowledge doc
-├── rag-prompts.md           # Knowledge doc
-├── rag-reality-checks.md    # Knowledge doc
-├── rag-runbooks.md          # Knowledge doc
-├── rag-structure.md         # Knowledge doc
-└── original_chat_context.md # Source intent
+└── README.md
 ```
 
 ## API Endpoints
@@ -206,8 +197,8 @@ payload_schema:
 # config.py
 class Config:
     # Models
-    EMBEDDING_MODEL = "text-embedding-3-small"
-    LLM_MODEL = "gpt-4o-mini"
+    EMBEDDING_MODEL = "text-embedding-ada-002"
+    LLM_MODEL = "gpt-3.5-turbo"
     
     # Chunking
     CHUNK_SIZE = 400
@@ -217,12 +208,6 @@ class Config:
     VECTOR_TOP_K = 5
     KEYWORD_TOP_K = 5
     MERGED_TOP_K = 5
-    VECTOR_BACKEND = "faiss"          # or "qdrant"
-    KEYWORD_BACKEND = "bm25"          # or "elasticsearch"
-    FAISS_INDEX_PATH = "data/indices/vector.faiss"
-    BM25_INDEX_DIR = "data/indices/bm25"
-    QDRANT_URL = "http://localhost:6333"
-    ELASTICSEARCH_URL = "http://localhost:9200"
     
     # Context
     MAX_CONTEXT_TOKENS = 3000

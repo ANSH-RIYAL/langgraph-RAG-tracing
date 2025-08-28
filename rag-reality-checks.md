@@ -1,7 +1,7 @@
 # REALITY_CHECKS - LangGraph Hybrid RAG with Citations
 
 ## Test Documents
-Store these in `test_documents/` (use the download script `scripts/download_test_docs.sh`):
+Store curated corpora in `real_data/` and example public docs in `test_documents/` (use the download script `scripts/download_test_docs.sh`).
 
 ### aws_well_architected_framework.pdf
 - Public AWS whitepaper (~100+ pages)
@@ -17,7 +17,7 @@ Store these in `test_documents/` (use the download script `scripts/download_test
 - 20+ Q&A pairs simulating internal SRE/DevOps FAQ
 - Format: "Q: ... A: ..."
 
-## Test Queries and Expected Results
+## Test Queries and Expected Results (All capabilities must run)
 
 ### Test 1: Exact Keyword Match
 ```json
@@ -63,7 +63,7 @@ import requests
 import json
 
 def test_rag_pipeline():
-    base_url = "http://localhost:8000"
+    base_url = "http://localhost:8050"
     
     # 1. Upload document
     print("Uploading test document...")
@@ -77,7 +77,7 @@ def test_rag_pipeline():
     assert chunks >= 100, f"Unexpected chunks: {chunks}"
     
     # 2. Test keyword query
-    print("Testing keyword search...")
+    print("Testing hybrid search (keyword included)...")
     response = requests.post(
         f"{base_url}/query",
         json={"question": "What is the purpose of a staging environment?"}
@@ -88,7 +88,7 @@ def test_rag_pipeline():
     assert "staging" in result["data"]["answer"].lower()
     
     # 3. Test semantic query
-    print("Testing semantic search...")
+    print("Testing hybrid search (semantic included)...")
     response = requests.post(
         f"{base_url}/query",
         json={"question": "How do we test changes before going live?"}
@@ -118,6 +118,10 @@ if __name__ == "__main__":
 - Simple query: <2s
 - Complex query: <3s
 - Both search methods return results: >80% of queries
+
+## Logging Expectations (Structured)
+- Per step logs include: {step, duration_ms, input_counts, output_counts, top_scores, ids}
+- No extraneous prints; only structured fields.
 
 ## Debug Output Format
 When debugging is enabled, you should see:

@@ -14,6 +14,7 @@ Rules:
 2. If the chunks don't contain the answer, say "I cannot find that information in the documents"
 3. Attribute each factual statement to its source by referencing the chunk_id in your wording where natural
 4. Keep your answer concise and factual
+5. Think step-by-step internally but DO NOT reveal your internal reasoning.
 
 Answer:"""
 ```
@@ -60,6 +61,20 @@ Score from 0.0 to 1.0:
 - 0.0-0.3 = Not relevant
 
 Return only the numerical score:"""
+```
+
+## Reasoning Summary Prompt (safe)
+```python
+REASONING_SUMMARY_PROMPT = """Produce a brief, high-level summary (1-2 sentences) of how the answer was derived from the provided chunks without exposing chain-of-thought.
+
+Question: {question}
+Answer: {answer}
+Chunks: {chunks}
+
+Constraints:
+- Do not reveal internal step-by-step reasoning.
+- Mention which chunk_ids were most influential if helpful.
+"""
 ```
 
 ## No Results Message

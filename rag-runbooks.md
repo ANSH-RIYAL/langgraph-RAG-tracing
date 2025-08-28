@@ -6,12 +6,9 @@
 **Symptoms**: Answer doesn't match the question or uses wrong information
 
 **Debug Steps**:
-1. Check retrieved chunks:
+1. Check retrieved chunks with structured logs:
 ```python
-# Add to query endpoint temporarily
-print(f"Vector chunks: {state['vector_chunks']}")
-print(f"Keyword chunks: {state['keyword_chunks']}")
-print(f"Merged chunks: {state['merged_chunks']}")
+log_step("retrieval", vector=len(state["vector_chunks"]), keyword=len(state["keyword_chunks"]), merged=len(state["merged_chunks"]))
 ```
 
 2. Verify chunk relevance:
@@ -31,26 +28,23 @@ print(f"Merged chunks: {state['merged_chunks']}")
 **Debug Steps**:
 1. Check if document is indexed:
 ```bash
-curl localhost:8000/documents
+curl localhost:8050/documents
 # Verify document appears
 ```
 
 2. Test searches directly (local backends):
 ```python
-# Test vector search (FAISS)
 from src.retrieval.vector_search import vector_search
-print(vector_search("test query")[:3])
-
-# Test keyword search (BM25)
 from src.retrieval.text_search import keyword_search
-print(keyword_search("test query")[:3])
+print({"vector": vector_search("test query")[:3]})
+print({"keyword": keyword_search("test query")[:3]})
 ```
 
 **Common Fixes**:
 - Reindex the document
 - Check for typos/special characters
 - Verify embeddings were created
- - Delete `data/indices/*` and re-ingest
+ - Delete `data/generated_indices/*` and re-ingest
 
 ### "Citations Don't Match Answer"
 **Symptoms**: Citations reference wrong chunks or don't support claims
@@ -116,12 +110,12 @@ def timed_node(name, func):
 
 ### FAISS/BM25 Not Found or Out-of-Date
 ```bash
-ls -lah data/indices/
-# Expect vector.faiss and bm25/ directory
+ls -lah data/generated_indices/
+# Expect vector.faiss (+ .meta.npy) and bm25/ directory, documents.json
 ```
 ```bash
 # Reset indices
-rm -rf data/indices/*
+rm -rf data/generated_indices/*
 python -m scripts.test_pipeline  # re-ingest during tests
 ```
 
@@ -130,15 +124,21 @@ python -m scripts.test_pipeline  # re-ingest during tests
 2. Set `QDRANT_URL` and `ELASTICSEARCH_URL`
 3. Run migration script to push local indices (to be added later)
 
+## Frontend/Backend Connectivity
+
+- Default dev: Backend at http://localhost:8050, Frontend at http://localhost:5000
+- Use Flask proxy routes `/api/*` to forward to backend; or enable CORS in FastAPI.
+- Common issue: CORS. Prefer proxy to avoid browser CORS in dev.
+
 ## Validation Checklist
 
 After any changes, verify:
 ```bash
 # 1. Upload test document
-curl -X POST -F "file=@test.pdf" localhost:8000/ingest
+curl -X POST -F "file=@test.pdf" localhost:8050/ingest
 
 # 2. Simple query
-curl -X POST localhost:8000/query \
+curl -X POST localhost:8050/query \
   -d '{"question":"What is this document about?"}'
 
 # 3. Check citations exist

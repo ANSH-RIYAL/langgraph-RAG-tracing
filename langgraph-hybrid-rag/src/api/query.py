@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict
 from ..config import config
@@ -33,4 +33,4 @@ async def query(req: QueryRequest) -> QueryResponse:
                               vector_chunks=vector_chunks, keyword_chunks=keyword_chunks)
         return QueryResponse(success=True, data=result)
     except Exception as e:
-        return QueryResponse(success=False, data=None, error=str(e))
+        raise HTTPException(status_code=500, detail=str(e))

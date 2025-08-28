@@ -14,3 +14,12 @@
 - Implemented deterministic citation fallback (uses top merged chunks) to guarantee citations even if LLM JSON fails.
 - Added /documents endpoint and document metadata tracking.
 - Verified end-to-end on port 8050; sample ingest and query outputs captured in README.
+
+## 2025-08-28
+- Enforced always-on hybrid retrieval (vector + keyword) for validation; no degraded modes.
+- Introduced Pydantic-first schemas for chunks, citations, queries; standardized response envelope.
+- Standardized generated artifacts under `data/generated_indices/` and added `real_data/` for curated corpora.
+- Added structured, step-scoped logging requirements (noise-free terminal output).
+- Updated prompts to include safe reasoning summary (no raw chain-of-thought).
+- Planned frontend proxy integration for `/api/*` to backend endpoints.
+ - Added root `.gitignore` to exclude virtualenv, caches, and generated artifacts.

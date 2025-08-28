@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from .ingest import router as ingest_router
 from .query import router as query_router
-from .documents import router as documents_router
 
 app = FastAPI(title="LangGraph Hybrid RAG (Local-First)")
 
@@ -13,4 +12,3 @@ async def health():
 
 app.include_router(ingest_router)
 app.include_router(query_router)
-app.include_router(documents_router)

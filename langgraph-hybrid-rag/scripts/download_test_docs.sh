@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-DOCS_DIR="$PROJECT_ROOT/test_documents"
-mkdir -p "$DOCS_DIR"
-cd "$DOCS_DIR"
+mkdir -p test_documents
+cd test_documents
 
 # AWS Well-Architected Framework
 if [ ! -f aws_well_architected_framework.pdf ]; then
@@ -35,4 +31,4 @@ Q: What is observability?
 A: The ability to understand system state via logs, metrics, traces.
 FAQ
 
-echo "Downloaded test documents to $DOCS_DIR"
+echo "Downloaded test documents."

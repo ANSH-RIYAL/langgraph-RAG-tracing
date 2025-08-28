@@ -41,8 +41,8 @@ LLM_MODEL=gpt-4o-mini
 EMBEDDING_MODEL=text-embedding-3-small
 VECTOR_BACKEND=faiss
 KEYWORD_BACKEND=bm25
-FAISS_INDEX_PATH=data/indices/vector.faiss
-BM25_INDEX_DIR=data/indices/bm25
+FAISS_INDEX_PATH=data/generated_indices/vector.faiss
+BM25_INDEX_DIR=data/generated_indices/bm25
 API_HOST=0.0.0.0
 API_PORT=8050
 ```
@@ -65,7 +65,8 @@ uvicorn src.api.main:app --host 0.0.0.0 --port 8050
 
 - GET `/health`: service health
 - POST `/ingest`: multipart file upload; indexes chunks into FAISS + BM25; returns `{document_id, chunks_created}`
-- POST `/query`: body `{question, max_chunks?}`; returns `{answer, citations[], chunks_retrieved}`
+- POST `/query`: body `{question, max_chunks?}`; returns `{answer, citations[], chunks_retrieved, chunks_used[], reasoning_summary}`
 - GET `/documents`: lists indexed documents with chunk counts and timestamps
+- GET `/chunk/{chunk_id}`: details for a specific chunk, with document metadata and source lines
 
-See `rag-structure.md` for the complete project layout and invariants.
+See `rag-structure.md` for the complete project layout and invariants. Realistic corpora should be stored under `real_data/`.
