@@ -8,3 +8,5 @@ class RAGState(TypedDict):
     merged_chunks: List[Dict]
     answer: str
     citations: List[Dict]
+    reasoning_summary: str | None
+    api_key: str

@@ -23,3 +23,13 @@
 - Updated prompts to include safe reasoning summary (no raw chain-of-thought).
 - Planned frontend proxy integration for `/api/*` to backend endpoints.
  - Added root `.gitignore` to exclude virtualenv, caches, and generated artifacts.
+
+## 2025-08-29
+- Fixed citation extraction KeyError by safe prompt formatting and Pydantic normalization.
+- Enforced Pydantic models on `/query` output: citations, chunks, query data envelope.
+- Added comparator helper to compute simple entity metric facts from retrieved chunks.
+- Augmented retrieval with entity aliases/tickers and metric hints for better recall.
+- Integrated optional DuckDuckGo enrichment during `/init` (added as separate chunks).
+- Addressed pandas resample deprecation by mapping M→ME.
+- Added structured logs around answer prep.
+- Validated multiple queries on `real_data/final_docs`; captured real JSON responses for README.

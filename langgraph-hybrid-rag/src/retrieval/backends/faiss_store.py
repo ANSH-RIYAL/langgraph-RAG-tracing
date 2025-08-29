@@ -39,6 +39,9 @@ class FaissStore:
         self._save()
 
     def search(self, query: str, top_k: int) -> List[Dict]:
+        if self.index is None:
+            if os.path.exists(self.index_path) and os.path.exists(self.index_path + ".meta.npy"):
+                self._load()
         if self.index is None or self.index.ntotal == 0:
             return []
         q = np.array([self.embeddings.embed_query(query)], dtype="float32")
