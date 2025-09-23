@@ -77,3 +77,5 @@ def build_from_companyfacts(path: str, data: Dict) -> List[Dict]:
     }]
 
 
+
+

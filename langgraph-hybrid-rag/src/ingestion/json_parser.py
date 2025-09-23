@@ -32,3 +32,5 @@ def flatten_companyfacts(data: Dict[str, Any]) -> pd.DataFrame:
     return df
 
 
+
+

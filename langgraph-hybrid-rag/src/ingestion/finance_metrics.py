@@ -10,3 +10,5 @@ def yoy_growth(series: pd.Series) -> pd.Series:
     return pct_change(series, periods=4)
 
 
+
+
